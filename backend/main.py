@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
-from src.routes import auth, stores
+from src.routes import auth, stores, sales
 from src.database.database import Base, engine
 import os
 from dotenv import load_dotenv
@@ -34,6 +34,7 @@ app.add_middleware(
 # Incluir rotas
 app.include_router(auth.router)
 app.include_router(stores.router)
+app.include_router(sales.router)
 
 if __name__ == "__main__":
     import uvicorn

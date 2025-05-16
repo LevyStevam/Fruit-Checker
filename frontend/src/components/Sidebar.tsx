@@ -5,6 +5,7 @@ import HistoryIcon from '@mui/icons-material/History';
 import InfoIcon from '@mui/icons-material/Info';
 import LogoutIcon from '@mui/icons-material/Logout';
 import StoreIcon from '@mui/icons-material/Store';
+import ReceiptIcon from '@mui/icons-material/Receipt';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -13,6 +14,7 @@ const DRAWER_WIDTH = 240;
 const menuItems = [
   { text: 'Home', icon: <HomeIcon />, path: '/' },
   { text: 'Lojas', icon: <StoreIcon />, path: '/stores' },
+  { text: 'Vendas', icon: <ReceiptIcon />, path: '/sales' },
   { text: 'Identificar Fruta', icon: <SearchIcon />, path: '/identify' },
   { text: 'Histórico', icon: <HistoryIcon />, path: '/history' },
   { text: 'Sobre', icon: <InfoIcon />, path: '/about' },

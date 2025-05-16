@@ -30,7 +30,6 @@ interface Store {
   id: number;
   name: string;
   cnpj: string;
-  sales: number;
   employees: number;
   address: string;
   phone: string;
@@ -44,7 +43,6 @@ const Stores = () => {
   const [formData, setFormData] = useState({
     name: '',
     cnpj: '',
-    sales: 0,
     employees: 0,
     address: '',
     phone: '',
@@ -85,7 +83,6 @@ const Stores = () => {
       setFormData({
         name: store.name,
         cnpj: store.cnpj,
-        sales: store.sales,
         employees: store.employees,
         address: store.address,
         phone: store.phone || '',
@@ -96,7 +93,6 @@ const Stores = () => {
       setFormData({
         name: '',
         cnpj: '',
-        sales: 0,
         employees: 0,
         address: '',
         phone: '',
@@ -115,7 +111,7 @@ const Stores = () => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'sales' || name === 'employees' ? Number(value) : value
+      [name]: name === 'employees' ? Number(value) : value
     }));
   };
 
@@ -134,7 +130,6 @@ const Stores = () => {
         showSnackbar('Loja criada com sucesso!', 'success');
       }
       handleCloseDialog();
-      // Aguardar um momento para garantir que o backend processou a operação
       setTimeout(() => {
         fetchStores();
       }, 500);
@@ -151,7 +146,6 @@ const Stores = () => {
           withCredentials: true
         });
         showSnackbar('Loja excluída com sucesso!', 'success');
-        // Aguardar um momento para garantir que o backend processou a operação
         setTimeout(() => {
           fetchStores();
         }, 500);
@@ -208,7 +202,6 @@ const Stores = () => {
                 <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
                   <TableCell>Nome</TableCell>
                   <TableCell>CNPJ</TableCell>
-                  <TableCell>Vendas</TableCell>
                   <TableCell>Funcionários</TableCell>
                   <TableCell>Endereço</TableCell>
                   <TableCell>Ações</TableCell>
@@ -217,7 +210,7 @@ const Stores = () => {
               <TableBody>
                 {stores.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} align="center">
+                    <TableCell colSpan={5} align="center">
                       <Typography variant="body1" sx={{ py: 2, color: 'text.secondary' }}>
                         Nenhuma loja cadastrada
                       </Typography>
@@ -228,7 +221,6 @@ const Stores = () => {
                     <TableRow key={store.id}>
                       <TableCell>{store.name}</TableCell>
                       <TableCell>{store.cnpj}</TableCell>
-                      <TableCell>R$ {store.sales.toFixed(2)}</TableCell>
                       <TableCell>{store.employees}</TableCell>
                       <TableCell>{store.address}</TableCell>
                       <TableCell>
@@ -272,15 +264,6 @@ const Stores = () => {
                 name="cnpj"
                 label="CNPJ"
                 value={formData.cnpj}
-                onChange={handleInputChange}
-                fullWidth
-                required
-              />
-              <TextField
-                name="sales"
-                label="Vendas"
-                type="number"
-                value={formData.sales}
                 onChange={handleInputChange}
                 fullWidth
                 required

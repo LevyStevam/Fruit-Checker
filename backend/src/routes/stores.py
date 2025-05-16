@@ -13,7 +13,6 @@ class StoreResponse(BaseModel):
     id: int
     name: str
     cnpj: str
-    sales: float
     employees: int
     address: str
     phone: Optional[str] = None
