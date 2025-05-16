@@ -4,6 +4,8 @@ import { ThemeProvider } from '@mui/material/styles';
 import { theme } from './theme/theme';
 import Login from './components/Login';
 import Home from './pages/Home';
+import Stores from './pages/Stores';
+import Sales from './pages/Sales';
 import { CircularProgress, Box } from '@mui/material';
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -68,6 +70,22 @@ const App = () => {
               element={
                 <PrivateRoute>
                   <Home />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/stores"
+              element={
+                <PrivateRoute>
+                  <Stores />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/sales"
+              element={
+                <PrivateRoute>
+                  <Sales />
                 </PrivateRoute>
               }
             />
