@@ -1,1 +1,3 @@
 backend/src/core/.env
+__pycache__/
+.env
