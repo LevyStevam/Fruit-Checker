@@ -8,6 +8,7 @@ from src.models.user import User
 from src.core.security import verify_token
 from fastapi import Cookie
 from pydantic import BaseModel
+from src.services.store_service import StoreService
 
 class StoreResponse(BaseModel):
     id: int
@@ -55,26 +56,7 @@ async def create_store(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # Verificar se o CNPJ já existe
-    existing_store = db.query(Store).filter(Store.cnpj == store_data["cnpj"]).first()
-    if existing_store:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="CNPJ já cadastrado"
-        )
-    
-    # Criar nova loja
-    new_store = Store(
-        **store_data,
-        user_id=current_user.id,
-        created_at=datetime.now().isoformat(),
-        updated_at=datetime.now().isoformat()
-    )
-    
-    db.add(new_store)
-    db.commit()
-    db.refresh(new_store)
-    return new_store
+    return StoreService(db).create_store(store_data, current_user)
 
 # Listar todas as lojas do usuário
 @router.get("/stores/", response_model=List[StoreResponse])
@@ -82,8 +64,7 @@ async def list_stores(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    stores = db.query(Store).filter(Store.user_id == current_user.id).all()
-    return stores
+    return StoreService(db).list_stores(current_user)
 
 # Obter uma loja específica
 @router.get("/stores/{store_id}", response_model=StoreResponse)
@@ -92,18 +73,7 @@ async def get_store(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    store = db.query(Store).filter(
-        Store.id == store_id,
-        Store.user_id == current_user.id
-    ).first()
-    
-    if not store:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Loja não encontrada"
-        )
-    
-    return store
+    return StoreService(db).get_store(store_id, current_user)
 
 # Atualizar uma loja
 @router.put("/stores/{store_id}", response_model=StoreResponse)
@@ -113,35 +83,7 @@ async def update_store(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    store = db.query(Store).filter(
-        Store.id == store_id,
-        Store.user_id == current_user.id
-    ).first()
-    
-    if not store:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Loja não encontrada"
-        )
-    
-    # Verificar se o novo CNPJ já existe (se estiver sendo alterado)
-    if "cnpj" in store_data and store_data["cnpj"] != store.cnpj:
-        existing_store = db.query(Store).filter(Store.cnpj == store_data["cnpj"]).first()
-        if existing_store:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="CNPJ já cadastrado"
-            )
-    
-    # Atualizar os campos
-    for key, value in store_data.items():
-        setattr(store, key, value)
-    
-    store.updated_at = datetime.now().isoformat()
-    
-    db.commit()
-    db.refresh(store)
-    return store
+    return StoreService(db).update_store(store_id, store_data, current_user)
 
 # Deletar uma loja
 @router.delete("/stores/{store_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -150,17 +92,5 @@ async def delete_store(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    store = db.query(Store).filter(
-        Store.id == store_id,
-        Store.user_id == current_user.id
-    ).first()
-    
-    if not store:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Loja não encontrada"
-        )
-    
-    db.delete(store)
-    db.commit()
+    StoreService(db).delete_store(store_id, current_user)
     return None 

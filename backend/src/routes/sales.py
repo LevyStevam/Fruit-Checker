@@ -9,6 +9,7 @@ from src.models.user import User
 from src.core.security import verify_token
 from fastapi import Cookie
 from pydantic import BaseModel
+from src.services.sale_service import SaleService
 
 class SaleResponse(BaseModel):
     id: int
@@ -58,21 +59,7 @@ async def create_sale(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # Verificar se a loja existe e pertence ao usuário
-    store = db.query(Store).filter(Store.id == sale_data.store_id, Store.user_id == current_user.id).first()
-    if not store:
-        raise HTTPException(status_code=404, detail="Loja não encontrada")
-    new_sale = Sale(
-        value=sale_data.value,
-        quantity=sale_data.quantity,
-        fruit=sale_data.fruit,
-        created_at=datetime.now().isoformat(),
-        store_id=sale_data.store_id
-    )
-    db.add(new_sale)
-    db.commit()
-    db.refresh(new_sale)
-    return new_sale
+    return SaleService(db).create_sale(sale_data, current_user)
 
 # Listar todas as vendas do usuário
 @router.get("/sales/", response_model=List[SaleResponse])
@@ -80,11 +67,7 @@ async def list_sales(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # Buscar todas as vendas das lojas do usuário
-    stores = db.query(Store).filter(Store.user_id == current_user.id).all()
-    store_ids = [store.id for store in stores]
-    sales = db.query(Sale).filter(Sale.store_id.in_(store_ids)).all()
-    return sales
+    return SaleService(db).list_sales(current_user)
 
 # Obter uma venda específica
 @router.get("/sales/{sale_id}", response_model=SaleResponse)
@@ -93,13 +76,7 @@ async def get_sale(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    sale = db.query(Sale).join(Store).filter(
-        Sale.id == sale_id,
-        Store.user_id == current_user.id
-    ).first()
-    if not sale:
-        raise HTTPException(status_code=404, detail="Venda não encontrada")
-    return sale
+    return SaleService(db).get_sale(sale_id, current_user)
 
 # Atualizar uma venda
 @router.put("/sales/{sale_id}", response_model=SaleResponse)
@@ -109,23 +86,7 @@ async def update_sale(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    sale = db.query(Sale).join(Store).filter(
-        Sale.id == sale_id,
-        Store.user_id == current_user.id
-    ).first()
-    if not sale:
-        raise HTTPException(status_code=404, detail="Venda não encontrada")
-    # Verificar se a loja existe e pertence ao usuário
-    store = db.query(Store).filter(Store.id == sale_data.store_id, Store.user_id == current_user.id).first()
-    if not store:
-        raise HTTPException(status_code=404, detail="Loja não encontrada")
-    sale.value = sale_data.value
-    sale.quantity = sale_data.quantity
-    sale.fruit = sale_data.fruit
-    sale.store_id = sale_data.store_id
-    db.commit()
-    db.refresh(sale)
-    return sale
+    return SaleService(db).update_sale(sale_id, sale_data, current_user)
 
 # Deletar uma venda
 @router.delete("/sales/{sale_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -134,12 +95,5 @@ async def delete_sale(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    sale = db.query(Sale).join(Store).filter(
-        Sale.id == sale_id,
-        Store.user_id == current_user.id
-    ).first()
-    if not sale:
-        raise HTTPException(status_code=404, detail="Venda não encontrada")
-    db.delete(sale)
-    db.commit()
+    SaleService(db).delete_sale(sale_id, current_user)
     return None 
