@@ -3,6 +3,8 @@ from sqlalchemy.orm import relationship
 from src.database.database import Base
 from src.models.sale import Sale
 from src.models.base_entity import BaseEntity
+from src.models.inventory import Inventory
+from src.models.supplier import Supplier
 
 class Store(BaseEntity, Base):
     __tablename__ = "stores"
@@ -18,6 +20,8 @@ class Store(BaseEntity, Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     user = relationship("User", back_populates="stores")
     sales = relationship("Sale", back_populates="store")
+    inventory = relationship("Inventory", back_populates="store")
+    suppliers = relationship("Supplier", back_populates="store")
 
     @property
     def name(self):
