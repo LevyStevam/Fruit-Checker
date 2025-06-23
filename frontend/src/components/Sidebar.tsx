@@ -8,6 +8,7 @@ import StoreIcon from '@mui/icons-material/Store';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import GroupIcon from '@mui/icons-material/Group';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
@@ -19,6 +20,7 @@ const menuItems = [
   { text: 'Lojas', icon: <StoreIcon />, path: '/stores' },
   { text: 'Vendas', icon: <TrendingUpIcon />, path: '/sales' },
   { text: 'Estoque', icon: <InventoryIcon />, path: '/inventory' },
+  { text: 'Fornecedores', icon: <GroupIcon />, path: '/suppliers' },
   { text: 'Identificar Fruta', icon: <SearchIcon />, path: '/identify' },
   { text: 'Histórico', icon: <HistoryIcon />, path: '/history' },
   { text: 'Sobre', icon: <InfoIcon />, path: '/about' },
