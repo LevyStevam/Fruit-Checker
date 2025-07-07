@@ -9,6 +9,7 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import GroupIcon from '@mui/icons-material/Group';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
@@ -21,6 +22,7 @@ const menuItems = [
   { text: 'Vendas', icon: <TrendingUpIcon />, path: '/sales' },
   { text: 'Estoque', icon: <InventoryIcon />, path: '/inventory' },
   { text: 'Fornecedores', icon: <GroupIcon />, path: '/suppliers' },
+  { text: 'Verificar Fruta', icon: <CheckCircleIcon />, path: '/verificar-fruta' },
   { text: 'Identificar Fruta', icon: <SearchIcon />, path: '/identify' },
   { text: 'Histórico', icon: <HistoryIcon />, path: '/history' },
   { text: 'Sobre', icon: <InfoIcon />, path: '/about' },
