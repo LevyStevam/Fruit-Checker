@@ -8,6 +8,7 @@ import Stores from './pages/Stores';
 import Sales from './pages/Sales';
 import InventoryPage from './pages/Inventory';
 import SuppliersPage from './pages/Suppliers';
+import VerificarFruta from './pages/VerificarFruta';
 import { CircularProgress, Box } from '@mui/material';
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -65,6 +66,7 @@ const App = () => {
             <Route path="/sales" element={<PrivateRoute><Sales /></PrivateRoute>} />
             <Route path="/inventory" element={<PrivateRoute><InventoryPage /></PrivateRoute>} />
             <Route path="/suppliers" element={<PrivateRoute><SuppliersPage /></PrivateRoute>} />
+            <Route path="/verificar-fruta" element={<PrivateRoute><VerificarFruta /></PrivateRoute>} />
           </Routes>
         </Router>
       </AuthProvider>
